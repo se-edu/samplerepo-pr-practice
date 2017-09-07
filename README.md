@@ -6,5 +6,5 @@ Creating Pull Requsts (PRs) is needed when using RCS in a multi-person projects.
 
 # Summary
 
-Creating Pull Requsts (PRs) is needed when using RCS in a multi-person projects. This is a summary
+Creating Pull Requsts (PRs) is needed when using RCS in a multi-person projects. This is a summary, now it is edited.
 
