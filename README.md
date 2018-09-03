@@ -1,2 +1,2 @@
-# [Sample Repo] PR Practice
+# [World] PR Practice
 A sample repo for practicing how to create Pull Requests
