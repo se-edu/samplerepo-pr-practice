@@ -6,3 +6,4 @@ Creating Pull Request(PRs) is needed when using RCS in a multi-person projects. 
 Very important to switch back to master branch first
 Create a Pull Request for add-intro and add-summary
 -----CONFLICT DEMO-------
+---------END--------`
