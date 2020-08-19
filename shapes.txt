@@ -1,3 +1,5 @@
 Circles
 Squares
 Triangles
+Rectangle
+Oblong
