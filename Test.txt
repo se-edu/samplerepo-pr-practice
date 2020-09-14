@@ -1,1 +1,2 @@
 Hello, World!
+The weather is good today.
