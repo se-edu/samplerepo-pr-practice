@@ -3,3 +3,6 @@ A sample repo for practicing how to create Pull Requests
 
 
 Example for mergin PR
+
+
+just another random commit
