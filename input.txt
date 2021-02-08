@@ -1,0 +1,14 @@
+todo buy book
+deadline sell book /by Sunday
+event project meeting /at Mon 2-4pm
+deadline do homework /by June 6th
+blah
+done 2
+list
+done 4
+list
+done -3
+delete 1
+delete 0
+list
+bye
