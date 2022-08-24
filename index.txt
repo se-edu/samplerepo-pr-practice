@@ -2,3 +2,6 @@ apple red
 orange orange
 pear green
 grape purple
+fruits colors
+some other stuff
+checking for commits
