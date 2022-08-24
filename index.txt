@@ -2,3 +2,4 @@ apple red
 orange orange
 pear green
 grape purple
+fruit color
