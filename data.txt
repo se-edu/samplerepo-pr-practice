@@ -1,0 +1,4 @@
+[T][ ] todo read book
+[E][X] event book reading /at 23 sept 2pm
+[D][ ] deadline cs2113 ip /by 30 sept 2359
+test
