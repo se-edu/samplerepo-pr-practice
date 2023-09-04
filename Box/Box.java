@@ -6,6 +6,6 @@ public class Box {
 
     private Sample sample;
     private Test test;
-    private Box box;
+    private Box Box;
 
 }
