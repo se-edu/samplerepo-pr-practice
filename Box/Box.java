@@ -8,4 +8,8 @@ public class Box {
     private Test test;
     private Box box;
 
+    private void getBox() {
+        System.out.println("box");
+    }
+
 }
