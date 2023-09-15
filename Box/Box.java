@@ -12,8 +12,7 @@ public class Box {
     private Sample sample;
     private Test test2;
     private Test test;
-    private Box Box;
-
+    private final Box Box = new Box();
     private void getBox() {
         System.out.println("box");
     }
