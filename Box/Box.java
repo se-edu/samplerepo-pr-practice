@@ -12,7 +12,7 @@ public class Box {
     private Sample sample;
     private Test test2;
     private Test test;
-    private Box Box;
+    private Box Box2;
 
     private void getBox() {
         System.out.println("box");
