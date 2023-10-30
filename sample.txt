@@ -1,0 +1,31 @@
+Initiate the PR creation:
+
+Go to your fork.
+
+Click on the  Pull requests tab followed by the  button. This will bring you to the Compare changes page.
+
+Set the appropriate target repo and the branch that should receive your PR, using the base repository and base dropdowns. e.g.,
+ 
+
+Normally, the default value shown in the dropdown is what you want but in case your fork has multiple upstream repos, the default may not be what you want.
+
+Indicate which repo:branch contains your proposed code, using the head repository and compare dropdowns. e.g.,
+ 
+
+6. Verify the proposed code: Verify that the diff view in the page shows the exact change you intend to propose. If it doesn't, update the branch as necessary.
+
+7. Submit the PR:
+
+Click the  button.
+
+Fill in the PR name and description e.g.,
+Name: Add an introduction to the README.md
+Description:
+
+Add some paragraph to the README.md to explain ...
+Also add a heading ...
+If you want to indicate that the PR you are about to create is 'still work in progress, not yet ready', click on the dropdown arrow in the  button and choose Create draft pull request option.
+
+Click the  button to create the PR.
+
+Go to the receiving repo to verify that your PR appears there in the Pull requests tab.
