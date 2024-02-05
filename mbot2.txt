@@ -1,0 +1,376 @@
+  #include "MeMCore.h"
+#define IRPROXIMITYSENSOR A2 // connected to IR
+#define COLORSENSOR A3 //connected to color sensor
+#define inputA A0 //input part A
+#define inputB A1 //input part B
+
+#define high 255
+#define TURNING_MAGNITUDE 30
+#define LED_DELAY 1000 // 1 sec for each LED
+
+#define RAW_WHITE 222
+#define RAW_BLACK 800
+//Colours from:
+#define WHITE 0
+#define BLACK 1
+#define RED 2
+#define GREEN 3
+#define BLUE 4
+#define PURPLE 5
+#define ORANGE 6
+int colour_index[3][7];
+
+#define TIMEOUT 2000 // Max microseconds to wait; choose according to max distance of wall
+#define SPEED_OF_SOUND 340 // Update according to your own experiment
+#define ULTRASONIC 12
+#define baseline 7
+
+MeLineFollower lineFinder(PORT_2); // assigning lineFinder to RJ25 port 2
+MeDCMotor leftMotor(M1); // assigning leftMotor to port M1
+MeDCMotor rightMotor(M2); // assigning RightMotor to port M2
+MeRGBLed led(0,30);
+int status = 0; // global status; 0 = do nothing, 1 = mBot runs
+
+// A && B -> Y1
+// A -> Y2
+// B -> Y3
+
+void setup() {
+  
+colour_index[0][WHITE] = 0;
+colour_index[1][WHITE] = 0;
+colour_index[2][WHITE] = 0;
+
+colour_index[0][BLACK] = 1000; 
+colour_index[1][BLACK] = 1000; 
+colour_index[2][BLACK] = 1000;  // black
+// INITIALISE FOR THE REST OF THE COLOURSSSSSSSSSSSSSSSSSSS
+colour_index[0][RED] = 380;
+colour_index[1][RED] = 900;
+colour_index[2][RED] = 750;
+
+colour_index[0][ORANGE] = 300;
+colour_index[1][ORANGE] = 840;
+colour_index[2][ORANGE] = 700;
+
+colour_index[0][GREEN] = 830;
+colour_index[1][GREEN] = 900;
+colour_index[2][GREEN] = 670;
+
+colour_index[0][BLUE] = 650;
+colour_index[1][BLUE] = 830;
+colour_index[2][BLUE] = 410;
+
+colour_index[0][PURPLE] = 600;
+colour_index[1][PURPLE] = 900;
+colour_index[2][PURPLE] = 500;
+
+
+  Serial.begin(9600);
+  pinMode(A0, OUTPUT);
+  pinMode(A1, OUTPUT);
+  pinMode(A2, INPUT);
+  pinMode(A7, INPUT); // Setup A7 as input for the push button
+  led.setpin(13);
+  led.setColor(0, 0, 0);
+  led.show();
+
+}
+
+float average() {
+  // assuming you want an average of 5 readings with 10 millisecond delay
+  float total = 0;
+  for(int i = 0; i < 5; i ++) {
+    total += analogRead(COLORSENSOR);
+    delay(10);
+  }
+  //return ((total/5) - RAW_WHITE) / (RAW_BLACK - RAW_WHITE) * 255;
+  return total/5;
+}
+
+void colordetection(float colourarr[]){
+
+  analogWrite(A0, high);
+  analogWrite(A1, high);
+  led.setColor(255, 0, 0);
+  led.show();
+  delay(LED_DELAY);
+  colourarr[0] = average(); //red
+  
+  analogWrite(A0, 0);
+  led.setColor(0, 255, 0);
+  led.show();
+  delay(LED_DELAY);
+  colourarr[1] = average(); //green
+
+  analogWrite(A1,0);
+  analogWrite(A0,high);
+  led.setColor(0, 0, 255);
+  led.show();
+  delay(LED_DELAY);
+  colourarr[2] = average(); //blue
+  
+  analogWrite(A1,0); // turned off
+  analogWrite(A0,0);
+  led.setColor(0,0,0);
+  led.show();
+  
+  Serial.print("colour array = ");
+  Serial.print(colourarr[0]);
+  Serial.print(" ");
+  Serial.print(colourarr[1]);
+  Serial.print(" ");
+  Serial.println(colourarr[2]);
+}
+
+// Function for actually reading the colours in the maze
+int colour_read(){
+    float colour[3];
+    colordetection(colour);
+
+/*
+    int lower;
+    int upper;
+    int points_index[7] = {0}; // Counts "points" for each colour
+    // Closest match = 3 points, 2nd closest = 2, 3rd = 1
+    for(int i = 0; i < 3; i ++) { // for r, g and b
+        int points = 3;
+        upper = colour[i];
+        lower = colour[i] - 1;
+        // Assign the points
+        while(points > 0) {
+            if(colour_index[i][upper] != 1000) {
+                points_index[ colour_index[i][upper] ] += points;
+                points -= 1;
+            }
+            if(colour_index[i][lower] != 1000) {
+                points_index[ colour_index[i][lower] ] += points;
+                points -= 1;
+            }
+            upper += 1;
+            lower += 1;
+        }
+    }
+
+    // Now look for the highest in the points index
+    int highest = 0;
+    int highest_index = 1000;
+    for(int i = 0; i < 7; i ++) {
+        if(points_index[i] > highest) {
+            highest = points_index[i];
+            highest_index = i;
+        }
+    }
+    return highest_index;
+    */
+    /*
+    // JAMES ONE
+    int colour_prox[3][7];
+    int point_counter[7];
+    for(int i = 0; i < 3; i ++) {
+        for(int j = 2; j < 7; j ++) {
+          colour_prox[i][j] = abs(colour_index[i][j] - colour[i]);
+        }
+    }
+    for(int i = 0; i < 3; i ++) {
+      for(int points = 3; points > 0; points --) {
+        int min = 1000;
+        int min_index = 0;
+        for(int j = 2; j < 7; j ++) {
+          if(colour_prox[i][j] < min) {
+            min_index = j;
+            min = colour_prox[i][j];
+          }
+        }
+        point_counter[min_index] += points;
+        colour_prox[i][min_index] = 1000;
+      }
+    }
+    int highest_points = 0;
+    int highest_index = 0;
+    for(int i = 2; i < 7; i ++) {
+      if (point_counter[i] > highest_points) {
+        highest_points = point_counter[i];
+        highest_index = i;
+      }
+    }
+    Serial.println(highest_index);
+    return highest_index;
+    */
+
+
+    //some colour array[r,g,b];
+    float shortest_dist = 450;
+    int nearest_colour = 8;
+    for (int i = 2; i < 7; i ++ ) {
+        float distance = sqrt(pow(colour_index[0][i] - colour[0],2) + pow(colour_index[1][i] - colour[1],2) + pow(colour_index[2][i] - colour[2],2));
+        if (distance < shortest_dist){
+              shortest_dist = distance;
+              nearest_colour = i;
+        }
+    }
+    Serial.println(nearest_colour);
+    return nearest_colour;
+}
+
+void print_colour(float colour[], float white[], float black[]) {
+  // OLD FUNCTION
+  Serial.print ( (colour[0] - white[0]) / (black[0] - white[0]) * 255);
+  Serial.print(" ");
+  Serial.print((colour[1] - white[1]) / (black[1] - white[1]) * 255);
+  Serial.print(" ");
+  Serial.println((colour[2] - white[2]) / (black[2] - white[2]) * 255);
+
+}
+// Function just for getting the values
+void calibration() {
+  Serial.println("Put White Sample For Calibration ...");
+  delay(5000);     //delay for five seconds for getting sample ready
+  float white[3];
+  colordetection(white);
+
+  Serial.println("Put Black Sample");
+  delay(5000);
+  float black[3];
+  colordetection(black);
+
+  Serial.println("Put Red");
+  delay(5000);
+  float red[3];
+  colordetection(red);
+
+  Serial.println("Put Green");
+  delay(5000);
+  float green[3];
+  colordetection(green);
+  
+  Serial.println("Put Blue");
+  delay(5000);
+  float blue[3];
+  colordetection(blue);
+
+  Serial.println("Put Purple");
+  delay(5000);
+  float purple[3];
+  colordetection(purple);
+
+  Serial.println("Put Orange");
+  delay(5000);
+  float orange[3];
+  colordetection(orange);
+
+  Serial.print("Red: ");
+  print_colour(red,white,black);
+
+  Serial.print("Green: ");
+  print_colour(green,white,black);
+
+  Serial.print("Blue: ");
+  print_colour(blue,white,black);
+
+  Serial.print("Purple: ");
+  print_colour(purple,white,black);
+
+  Serial.print("Orange: ");
+  print_colour(orange,white,black);
+}
+
+long ultdist(){
+  pinMode(ULTRASONIC, OUTPUT);
+  digitalWrite(ULTRASONIC, LOW);
+  delayMicroseconds(2);
+  digitalWrite(ULTRASONIC, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(ULTRASONIC, LOW);
+  pinMode(ULTRASONIC, INPUT);
+  float duration = pulseIn(ULTRASONIC, HIGH, TIMEOUT);
+  if (duration > 0) {
+    //Serial.print("distance(cm) = ");
+    float distance = duration / 2.0 / 1000000 * SPEED_OF_SOUND * 100;
+    //Serial.println(distance);
+    return distance;
+  }
+  else {
+    //Serial.println("out of range");
+    return 0;
+  }
+  //delay(500);
+}
+
+void reverse(){
+  leftMotor.run(100);
+  rightMotor.run(-100);
+  delay(300);
+}
+
+void kebelakang() {
+  leftMotor.run(-100);
+  rightMotor.run(-100);
+  delay(2500);
+}
+
+void right(){
+  leftMotor.run(-200);
+  rightMotor.run(100);
+  delay(2000);
+}
+
+void left(){
+  leftMotor.run(100);
+  rightMotor.run(200);
+  delay(500);
+}
+
+void loop() {
+  //calibration();
+  //Serial.println(average());
+        //Serial.println(analogRead(COLORSENSOR));
+        
+  
+    int sensorState = lineFinder.readSensors(); // read the line sensor's state
+    if (sensorState == 3) {
+      int difference = baseline - ultdist();
+      //if (difference > 3){difference = 0;} //baseline - ultdist();
+      //leftMotor.run(-100 + TURNING_MAGNITUDE * difference); // Left wheel reverses (clockwise)
+      //rightMotor.run(100); // Right wheel reverses (anti-clockwise)
+    }
+    if (sensorState == 0){
+      
+      //leftMotor.run(00);
+      //rightMotor.run(00);
+      //calibration();
+      int floor_tile = colour_read();
+      if(floor_tile == RED) {
+        led.setColor(255,0,0);
+        led.show();
+        Serial.println("RED");
+        //left();
+      } else if (floor_tile == GREEN) {
+        Serial.println("GREEN");
+        led.setColor(0,255,0);
+        led.show();
+        //right();
+      } else if (floor_tile == BLUE) {
+        led.setColor(0,0,255);
+        led.show();
+        Serial.println("BLUE");
+        //right(); // might need to move forward a bit between?
+        //right();
+      } else if (floor_tile == PURPLE) {
+        led.setColor(172,0,250);
+        led.show();
+        Serial.println("PURPLE");
+        //left();
+        //left();
+      } else if (floor_tile == ORANGE) {
+        led.setColor(255,102,0);
+        led.show();
+        Serial.println("ORANGE");
+        //kebelakang();
+      } else {
+        floor_tile = colour_read(); // try again
+      }
+      //right();
+    }
+    delay(20); // decision making interval (in milliseconds)
+  }
