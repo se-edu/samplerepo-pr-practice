@@ -1,0 +1,2 @@
+Option A - Commit changes to the master branch
+Option B - Commit to a new branch e.g., create a branch named add-intro (remember to switch to the master branch before creating a new branch) and add your commit to it.
