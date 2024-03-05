@@ -8,5 +8,6 @@ public class Test {
     public static void main (String[] args) {
         Test one = new Test();
         System.out.println(one.line);
+        System.out.println("lalalala");
     }
 }
