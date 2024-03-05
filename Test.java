@@ -9,5 +9,6 @@ public class Test {
         Test one = new Test();
         System.out.println(one.line);
         System.out.println("lalalala");
+        System.out.println("lalalala");
     }
 }
