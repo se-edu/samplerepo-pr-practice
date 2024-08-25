@@ -1,2 +1,3 @@
 # [Sample Repo] PR Practice
-A sample repo for practicing how to create Pull Requests
+A sample repo for practicing how to create Pull Requests  
+Hello I like git
