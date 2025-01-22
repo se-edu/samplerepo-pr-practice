@@ -1,6 +1,10 @@
 much wow
 double wow
+<<<<<<< HEAD
 triple baby
 hey message
 321
 is this thing on?
+=======
+triple baby
+>>>>>>> parent of e73f13d (hey)
