@@ -1,0 +1,7 @@
+london
+paris 
+frankfurt
+berlin 
+los angeles 
+beijing
+tokyo
